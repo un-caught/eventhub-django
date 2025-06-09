@@ -1,0 +1,21 @@
+# Core Requirements
+Django==5.2.2
+Pillow==11.2.1  # For image handling
+
+# Form Handling
+django-crispy-forms==2.4
+crispy-bootstrap5==2025.6
+
+# PDF Generation
+reportlab==4.4.1
+qrcode==8.2
+
+# Date/Time Handling
+python-dateutil==2.8.2
+
+# Production Dependencies
+gunicorn==23.0.0
+whitenoise==6.9.0  # For static files
+
+# Security
+django-allauth==65.9.0  # For authentication
