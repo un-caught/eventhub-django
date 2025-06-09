@@ -1,0 +1,37 @@
+<!-- templates/footer/about.html -->
+{% extends 'events/base.html' %}
+
+{% block title %}About Us - EventHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">About EventHub</h1>
+            <p class="lead">Your premier platform for discovering and creating unforgettable events.</p>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h4">Our Mission</h2>
+                    <p>At EventHub, we're dedicated to connecting people through amazing experiences. We believe that events have the power to bring communities together, spark creativity, and create lasting memories.</p>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h4">Our Story</h2>
+                    <p>Founded in {% now "Y" %}, EventHub began as a small project to help local organizers promote their events. Today, we've grown into a global platform serving millions of users and thousands of event organizers worldwide.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h4">Our Team</h2>
+                    <p>We're a diverse team of event enthusiasts, tech experts, and customer service professionals committed to making EventHub the best platform for event discovery and management.</p>
+                    <a href="#" class="btn btn-primary mt-3">Join Our Team</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

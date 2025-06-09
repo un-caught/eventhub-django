@@ -1,0 +1,440 @@
+{% extends 'events/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+<!-- Event Header -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'event-list' %}">Events</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ event.title }}</li>
+                    </ol>
+                </nav>
+                <h1 class="display-5 fw-bold mb-3">{{ event.title }}</h1>
+                <div class="d-flex flex-wrap align-items-center mb-4">
+                    <div class="d-flex align-items-center me-4 mb-2 mb-sm-0">
+                        <i class="fas fa-calendar-alt text-primary me-2"></i>
+                        <span>{{ event.start_date|date:"F d, Y" }} • {{ event.start_date|time }}</span>
+                    </div>
+                    <div class="d-flex align-items-center me-4 mb-2 mb-sm-0">
+                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                        <span>{{ event.location }}</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-tag text-primary me-2"></i>
+                        <span class="badge bg-primary">{{ event.category }}</span>
+                    </div>
+                </div>
+                <div class="d-flex mb-4">
+                    <div class="me-3">
+                        <img src="{{ event.organizer.profile.profile_pic.url }}" class="rounded-circle" width="50" alt="Organizer">
+                    </div>
+                    <div>
+                        <p class="mb-0">Organized by</p>
+                        <h6 class="mb-0">{{ event.organizer.username }}</h6>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    {% if event.ticket_types.exists %}
+                    <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#ticketModal">
+                        <i class="fas fa-ticket-alt me-2"></i>Get Tickets
+                    </button>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        {% if event in user.profile.saved_events.all %}
+                        <form method="post" action="{% url 'unsave-event' event.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="fas fa-heart"></i> Saved
+                            </button>
+                        </form>
+                        {% else %}
+                        <form method="post" action="{% url 'save-event' event.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="far fa-heart"></i> Save Event
+                            </button>
+                        </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Event Details</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <div class="d-flex">
+                                    <i class="fas fa-calendar-alt text-primary mt-1 me-3"></i>
+                                    <div>
+                                        <h6 class="mb-0">Date & Time</h6>
+                                        <p class="mb-0">{{ event.start_date|date:"D, M d, Y" }}<br>{{ event.start_date|time }} – {{ event.end_date|time }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mb-3">
+                                <div class="d-flex">
+                                    <i class="fas fa-map-marker-alt text-primary mt-1 me-3"></i>
+                                    <div>
+                                        <h6 class="mb-0">Location</h6>
+                                        <p class="mb-0">{{ event.location }}<br>{{ event.city }}, {{ event.state }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="mb-3">
+                                <div class="d-flex">
+                                    <i class="fas fa-ticket-alt text-primary mt-1 me-3"></i>
+                                    <div>
+                                        <h6 class="mb-0">Refund Policy</h6>
+                                        <p class="mb-0">No Refunds</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Event Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Event Gallery -->
+                <div class="mb-5">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <img src="{{ event.featured_image.url }}" class="img-fluid rounded-3" alt="{{ event.title }}">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event Description -->
+                <div class="mb-5">
+                    <h3 class="mb-4">About This Event</h3>
+                    <p>{{ event.description }}</p>
+                </div>
+
+<!-- Organizer Controls Section -->
+{% if is_organizer %}
+<section class="py-3 bg-light">
+    <div class="container">
+        <div class="d-flex flex-wrap gap-3">
+            <!-- Publish/Unpublish Button -->
+            <form method="post" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="publish_toggle" value="1">
+                <button type="submit" class="btn {% if event.is_published %}btn-warning{% else %}btn-success{% endif %}">
+                    {% if event.is_published %}
+                        <i class="fas fa-eye-slash"></i> Unpublish
+                    {% else %}
+                        <i class="fas fa-eye"></i> Publish
+                    {% endif %}
+                </button>
+            </form>
+            
+            <!-- Edit Event Button -->
+            <a href="{% url 'update-event' event.pk %}" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit Event
+            </a>
+            
+            <!-- Add Ticket Type Button -->
+            <button class="btn btn-info" data-bs-toggle="collapse" data-bs-target="#ticketFormCollapse">
+                <i class="fas fa-ticket-alt"></i> Add Ticket Type
+            </button>
+            
+            <!-- Add Image Button -->
+            <button class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#imageFormCollapse">
+                <i class="fas fa-image"></i> Add Image
+            </button>
+        </div>
+        
+        <!-- Ticket Type Form (Collapsible) -->
+        <div class="collapse mt-3" id="ticketFormCollapse">
+            <div class="card card-body">
+                <h5>Add New Ticket Type</h5>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="ticket_form" value="1">
+                    {{ ticket_form|crispy }}
+                    <button type="submit" class="btn btn-primary">Add Ticket</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Image Upload Form (Collapsible) -->
+        <div class="collapse mt-3" id="imageFormCollapse">
+            <div class="card card-body">
+                <h5>Add Event Image</h5>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="image_form" value="1">
+                    {{ image_form|crispy }}
+                    <button type="submit" class="btn btn-primary">Upload Image</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ... rest of your existing template ... -->
+
+<!-- Ticket Types Section -->
+<section class="py-5">
+    <div class="container">
+        <h3 class="mb-4">Ticket Types</h3>
+        {% if ticket_types %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Available</th>
+                        {% if is_organizer %}<th>Actions</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in ticket_types %}
+                    <tr>
+                        <td>{{ ticket.name }}</td>
+                        <td>${{ ticket.price }}</td>
+                        <td>{{ ticket.quantity }}</td>
+                        {% if is_organizer %}
+                        <td>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="#" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No ticket types available yet.</div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Event Gallery Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h3 class="mb-4">Event Gallery</h3>
+        {% if images %}
+        <div class="row g-3">
+            {% for image in images %}
+            <div class="col-md-4 col-lg-3">
+                <div class="card">
+                    <img src="{{ image.image.url }}" class="card-img-top" alt="Event image">
+                    {% if is_organizer %}
+                    <div class="card-footer">
+                        <form method="post" action="{% url 'delete-event-image' image.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger w-100">Delete</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">No additional images available yet.</div>
+        {% endif %}
+    </div>
+</section>
+
+                <!-- Reviews -->
+                <div class="mb-5">
+                    <h3 class="mb-4">Reviews</h3>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="me-3">
+                            <h1 class="mb-0">{{ event.get_average_rating|floatformat:1 }}</h1>
+                        </div>
+                        <div>
+                            <div class="mb-1">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= event.get_average_rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ms-2">({{ reviews.count }} reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if user.is_authenticated and not user_review %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Write a Review</h5>
+                            <form method="post" action="{% url 'event-detail' event.pk %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="review_submit" value="1">
+                                {{ review_form|crispy }}
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% for review in reviews %}
+                    <div class="mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex mb-3">
+                                    <img src="{{ review.user.profile.profile_pic.url }}" class="rounded-circle me-3" width="50" alt="User">
+                                    <div>
+                                        <h6 class="mb-0">{{ review.user.username }}</h6>
+                                        <div class="text-warning mb-1">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.rating %}
+                                                    <i class="fas fa-star"></i>
+                                                {% else %}
+                                                    <i class="far fa-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <p class="text-muted small">Reviewed on {{ review.created_at|date:"F d, Y" }}</p>
+                                    </div>
+                                </div>
+                                <h5>{{ review.comment|truncatewords:10 }}</h5>
+                                <p>{{ review.comment }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ticket Options -->
+                <div class="card shadow-sm mb-4 border-0 sticky-top" style="top: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Tickets</h5>
+                        {% if event.ticket_types.exists %}
+                            {% for ticket_type in ticket_types %}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h6 class="mb-0">{{ ticket_type.name }}</h6>
+                                    <span class="fw-bold">${{ ticket_type.price }}</span>
+                                </div>
+                                <p class="small text-muted">{{ ticket_type.description }}</p>
+                                <p class="small text-muted">{{ ticket_type.quantity }} available</p>
+                            </div>
+                            {% endfor %}
+                            <button class="btn btn-primary w-100 py-2" data-bs-toggle="modal" data-bs-target="#ticketModal">
+                                <i class="fas fa-ticket-alt me-2"></i>Get Tickets
+                            </button>
+                        {% else %}
+                            <p class="text-muted">No tickets available yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Similar Events -->
+                <div class="card shadow-sm mb-4 border-0">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Similar Events</h5>
+                        {% for similar_event in similar_events %}
+                        <div class="mb-3">
+                            <div class="d-flex">
+                                <img src="{{ similar_event.featured_image.url }}" class="rounded me-3" width="60" alt="Event">
+                                <div>
+                                    <h6 class="mb-0">{{ similar_event.title }}</h6>
+                                    <p class="small text-muted mb-1">{{ similar_event.start_date|date:"M d" }} • {{ similar_event.location }}</p>
+                                    <span class="badge bg-primary small">{{ similar_event.category }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <a href="{% url 'event-list' %}?category={{ event.category.name }}" class="btn btn-outline-primary w-100 mt-2">View All</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Ticket Modal -->
+<div class="modal fade" id="ticketModal" tabindex="-1" aria-labelledby="ticketModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ticketModalLabel">Get Tickets</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'event-detail' event.pk %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="booking_submit" value="1">
+                    <div class="mb-3">
+                        <label for="ticketType" class="form-label">Ticket Type</label>
+                        <select class="form-select" id="ticketType" name="ticket_type" required>
+                            <option value="" selected disabled>Select a ticket type</option>
+                            {% for ticket_type in ticket_types %}
+                            <option value="{{ ticket_type.pk }}">{{ ticket_type.name }} - ${{ ticket_type.price }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ticketQuantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="ticketQuantity" name="quantity" min="1" value="1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Book Tickets</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    /* Organizer Controls */
+.organizer-controls {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Collapsible Forms */
+.collapse-form {
+    transition: all 0.3s ease;
+}
+
+/* Ticket Table */
+.ticket-table th {
+    white-space: nowrap;
+}
+
+/* Image Gallery */
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.image-card {
+    transition: transform 0.2s;
+}
+
+.image-card:hover {
+    transform: translateY(-5px);
+}
+
+</style>
+{% endblock %}

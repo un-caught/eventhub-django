@@ -1,0 +1,30 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('events/', views.event_list, name='event-list'),
+    path('events/<int:pk>/', views.event_detail, name='event-detail'),
+    path('events/create/', views.create_event, name='create-event'),
+    path('events/<int:pk>/add-image/', views.add_event_image, name='add-event-image'),
+    path('events/<int:pk>/add-ticket/', views.add_ticket_type, name='add-ticket-type'),
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('events/<int:pk>/add-image/', views.add_event_image, name='add-event-image'),
+    path('events/<int:pk>/add-ticket/', views.add_ticket_type, name='add-ticket-type'),
+    path('event-images/<int:pk>/delete/', views.delete_event_image, name='delete-event-image'),
+    path('dashboard/my-events/', views.my_events, name='my-events'),
+    path('dashboard/my-tickets/', views.my_tickets, name='my-tickets'),
+    path('dashboard/saved-events/', views.saved_events, name='saved-events'),
+    path('events/<int:pk>/save/', views.save_event, name='save-event'),
+    path('events/<int:pk>/unsave/', views.unsave_event, name='unsave-event'),
+    path('events/<int:pk>/update/', views.update_event, name='update-event'),
+    path('events/<int:pk>/delete/', views.delete_event, name='delete-event'),
+    path('event-images/<int:pk>/delete/', views.delete_event_image, name='delete-event-image'),
+    path('bookings/<int:booking_id>/download/', views.download_ticket, name='download-ticket'),
+    path('about/', views.about, name='about'),
+    path('faq/', views.faq, name='faq'),
+    path('privacy-policy/', views.privacy_policy, name='privacy-policy'),
+    path('resources/', views.organizer_resources, name='organizer-resources'),
+    path('categories/', views.category_list, name='category-list'),
+    path('contact/', views.contact, name='contact'),
+]

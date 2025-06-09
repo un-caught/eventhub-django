@@ -1,0 +1,150 @@
+{% extends 'events/base.html' %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">Browse All Events</h1>
+                <p class="lead mb-0">Discover thousands of events happening near you or around the world</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                {% if user.is_authenticated %}
+                <a href="{% url 'create-event' %}" class="btn btn-light">Create Event</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Events Filter -->
+<section class="py-4 bg-light">
+    <div class="container">
+        <form method="get">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <select class="form-select" name="category">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.name }}" {% if request.GET.category == category.name %}selected{% endif %}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" name="event_type">
+                        <option value="">All Types</option>
+                        <option value="IN_PERSON" {% if request.GET.event_type == 'IN_PERSON' %}selected{% endif %}>In-Person</option>
+                        <option value="ONLINE" {% if request.GET.event_type == 'ONLINE' %}selected{% endif %}>Online</option>
+                        <option value="HYBRID" {% if request.GET.event_type == 'HYBRID' %}selected{% endif %}>Hybrid</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" class="form-control" name="date" value="{{ request.GET.date }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Events List -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Events Grid -->
+            <div class="col-lg-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0">{{ page_obj.paginator.count }} Events Found</h5>
+                </div>
+                
+                <div class="row">
+                    {% for event in page_obj %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card event-card h-100">
+                            <div class="position-relative">
+                                <img src="{{ event.featured_image.url }}" class="card-img-top" alt="{{ event.title }}">
+                                <div class="event-date">{{ event.start_date|date:"M d" }}</div>
+                                {% if user.is_authenticated %}
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        {% if event in user.profile.saved_events.all %}
+                                        <form method="post" action="{% url 'unsave-event' event.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-light rounded-circle" title="Unsave">
+                                                <i class="fas fa-heart text-danger"></i>
+                                            </button>
+                                        </form>
+                                        {% else %}
+                                        <form method="post" action="{% url 'save-event' event.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-light rounded-circle" title="Save">
+                                                <i class="far fa-heart text-dark"></i>
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ event.title }}</h5>
+                                <p class="text-muted mb-2"><i class="fas fa-map-marker-alt me-2"></i>{{ event.location }}</p>
+                                <p class="card-text mb-3">{{ event.description|truncatewords:20 }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary">{{ event.category }}</span>
+                                    <span class="fw-bold">
+                                        {% if event.ticket_types.first %}
+                                            ${{ event.ticket_types.first.price }}
+                                        {% else %}
+                                            Free
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-0">
+                                <a href="{% url 'event-detail' event.pk %}" class="btn btn-primary w-100">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">&laquo; First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

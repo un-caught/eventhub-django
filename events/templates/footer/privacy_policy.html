@@ -1,0 +1,53 @@
+<!-- templates/footer/privacy_policy.html -->
+{% extends 'events/base.html' %}
+
+{% block title %}Privacy Policy - EventHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">Privacy Policy</h1>
+            <p class="text-muted">Last updated: {% now "F j, Y" %}</p>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h4">1. Information We Collect</h2>
+                    <p>We collect information to provide better services to all our users. The types of information we collect include:</p>
+                    <ul>
+                        <li>Account information (name, email, profile details)</li>
+                        <li>Event information you provide when creating or booking events</li>
+                        <li>Payment and billing information</li>
+                        <li>How you use our services (interactions, preferences)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h4">2. How We Use Information</h2>
+                    <p>We use the information we collect to:</p>
+                    <ul>
+                        <li>Provide, maintain, and improve our services</li>
+                        <li>Develop new features and functionality</li>
+                        <li>Process transactions and send notifications</li>
+                        <li>Personalize content and recommendations</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="h4">3. Information Sharing</h2>
+                    <p>We do not share personal information with companies, organizations, or individuals outside of EventHub except in the following cases:</p>
+                    <ul>
+                        <li>With your consent</li>
+                        <li>For external processing by our trusted service providers</li>
+                        <li>For legal reasons</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

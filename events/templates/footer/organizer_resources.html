@@ -1,0 +1,63 @@
+<!-- templates/footer/organizer_resources.html -->
+{% extends 'events/base.html' %}
+
+{% block title %}Organizer Resources - EventHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">Resources for Event Organizers</h1>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Getting Started Guide</h2>
+                            <p class="card-text">Learn how to create and promote your first event on EventHub.</p>
+                            <a href="#" class="btn btn-sm btn-primary">Download Guide</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Marketing Toolkit</h2>
+                            <p class="card-text">Templates and tips to help you promote your events effectively.</p>
+                            <a href="#" class="btn btn-sm btn-primary">Access Toolkit</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Success Stories</h2>
+                            <p class="card-text">Learn from other organizers who've found success on EventHub.</p>
+                            <a href="#" class="btn btn-sm btn-primary">Read Stories</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h5 card-title">Webinars & Training</h2>
+                            <p class="card-text">Join our free webinars to learn best practices for event organizers.</p>
+                            <a href="#" class="btn btn-sm btn-primary">View Schedule</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-body text-center">
+                    <h2 class="h5">Ready to create your event?</h2>
+                    <a href="{% url 'create-event' %}" class="btn btn-primary">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

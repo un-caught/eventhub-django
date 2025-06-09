@@ -1,0 +1,71 @@
+<!-- templates/footer/faq.html -->
+{% extends 'events/base.html' %}
+
+{% block title %}Frequently Asked Questions - EventHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">Frequently Asked Questions</h1>
+            
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                            How do I create an event?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
+                        <div class="accordion-body">
+                            <p>To create an event:</p>
+                            <ol>
+                                <li>Click on "Create Event" in the navigation or footer</li>
+                                <li>Fill in all the required details about your event</li>
+                                <li>Set your ticket types and pricing</li>
+                                <li>Preview and publish your event</li>
+                            </ol>
+                            <a href="{% url 'create-event' %}" class="btn btn-sm btn-primary">Create Event Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            What payment methods do you accept?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo">
+                        <div class="accordion-body">
+                            We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and in some regions, Apple Pay and Google Pay.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            Can I get a refund for my ticket?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree">
+                        <div class="accordion-body">
+                            Refund policies are set by the event organizer. You can check the specific refund policy for each event on the event page. Our standard refund policy allows refunds up to 7 days before the event unless otherwise noted.
+                            <a href="#" class="d-block mt-2">View full refund policy</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body text-center">
+                    <h2 class="h5">Still have questions?</h2>
+                    <p>Our support team is happy to help!</p>
+                    <a href="#" class="btn btn-primary">Contact Support</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
