@@ -2,12 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 import uuid
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to='category_images', blank=True)
+    image = CloudinaryField('image', blank=True)
 
     def __str__(self):
         return self.name
@@ -32,7 +33,7 @@ class Event(models.Model):
     zip_code = models.CharField(max_length=20)
     country = models.CharField(max_length=100, default='United States')
     organizer = models.ForeignKey(User, on_delete=models.CASCADE)
-    featured_image = models.ImageField(upload_to='event_images')
+    featured_image = CloudinaryField('image')
     is_published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -45,7 +46,7 @@ class Event(models.Model):
 
 class EventImage(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='event_images')
+    image = CloudinaryField('image')
 
     def __str__(self):
         return f"Image for {self.event.title}"
