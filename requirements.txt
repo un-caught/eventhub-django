@@ -19,3 +19,6 @@ whitenoise==6.9.0  # For static files
 
 # Security
 django-allauth==65.9.0  # For authentication
+
+django-storages 
+cloudinary
