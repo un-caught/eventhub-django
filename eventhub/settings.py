@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'storages',
     'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -130,12 +131,13 @@ STATICFILES_DIRS = [
 ]
 
 
-# Cloudinary storage settings
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dqquwiorh',    # from Cloudinary dashboard
-    'API_KEY': '728259227986873',
-    'API_SECRET': '91Rx59f6yk2oOrLVX0pgkYHvruA',
-}
+import cloudinary
+
+cloudinary.config( 
+  cloud_name = "dqquwiorh", 
+  api_key = "728259227986873", 
+  api_secret = "91Rx59f6yk2oOrLVX0pgkYHvruA" 
+)
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Media files
