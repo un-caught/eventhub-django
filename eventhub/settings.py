@@ -163,4 +163,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'DoNotReply <donotreplythismail34@gmail.com>'
 EMAIL_HOST_USER = 'donotreplythismail34@gmail.com'
-EMAIL_HOST_PASSWORD = 'rmgp ibya oxrw zdyb' #dslw uasc tmba vwuz
+EMAIL_HOST_PASSWORD = 'jqgv wbml phjh gaar'
