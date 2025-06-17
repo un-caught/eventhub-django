@@ -134,9 +134,10 @@ STATICFILES_DIRS = [
 import cloudinary
 
 cloudinary.config( 
-  cloud_name = "dqquwiorh", 
-  api_key = "728259227986873", 
-  api_secret = "91Rx59f6yk2oOrLVX0pgkYHvruA" 
+  cloud_name = os.environ.get('cloud_name'),
+  api_key = os.environ.get('api_key'),
+  api_secret = os.environ.get('api_secret')
+
 )
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
@@ -163,4 +164,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'DoNotReply <donotreplythismail34@gmail.com>'
 EMAIL_HOST_USER = 'donotreplythismail34@gmail.com'
-EMAIL_HOST_PASSWORD = 'jqgv wbml phjh gaar'
+EMAIL_HOST_PASSWORD = os.environ.get('email_password')
